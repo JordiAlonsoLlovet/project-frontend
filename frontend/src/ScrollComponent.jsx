@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Route, NavLink, HashRouter } from "react-router-dom";
+import Question from "./Question";
 
 class ScrollComponent extends Component {
   constructor() {
     super();
     this.state = {
-      trivia: [],
-      token: "a",
+        trivia: [],
+        answers: [],
+      question: "",
+      token: "",
       finish: false,
       loading: false
     };
@@ -24,20 +28,29 @@ class ScrollComponent extends Component {
 
     return (
       <div>
+        <Route
+          path="/question"
+          render={props => (
+              <Question {...props} pregunta={this.state.question} respuestas={this.state.answers} />
+          )}
+        />
         <div className="loadedContainers">
           {this.state.trivia.map(user => (
-              <div className="container">
-              <h2>{this.htmlDecode(user.question)}</h2>
+            <NavLink
+              to="/question"
+              className="container"
+              onClick={() => this.setQuestion(user)}
+            >
+                  <h2>{this.htmlDecode(user.question)}</h2>
+                  <li>{this.htmlDecode(user.incorrect_answers[1])}</li>
               <div>
-                <li>
-                  {user.category}
-                </li>
+                <li>{user.category}</li>
                 <li>
                   <b>Difficulty: </b>
                   {user.difficulty}
                 </li>
               </div>
-            </div>
+            </NavLink>
           ))}
         </div>
         <div
@@ -74,8 +87,16 @@ class ScrollComponent extends Component {
     this.setState({ prevY: y });
   }
 
-    getTrivia(limit = 10) {
-      //console.log(this.state.token)
+    setQuestion(pregunta) {
+        console.log(pregunta);
+        this.setState({ question: pregunta });
+        var position = Math.floor(Math.random() * pregunta.incorrect_answers.length)
+        var answers = pregunta.incorrect_answers.splice(position, 0, ...pregunta.correct_answer)
+        this.setState({ answers: answers })
+    }
+
+  getTrivia(limit = 10) {
+    //console.log(this.state.token)
     this.setState({ loading: true });
     axios
       .get(
@@ -87,7 +108,9 @@ class ScrollComponent extends Component {
       .then(res => {
         switch (res.data.response_code) {
           case 0:
-            this.setState({ trivia: [...this.state.trivia, ...res.data.results] });
+            this.setState({
+              trivia: [...this.state.trivia, ...res.data.results]
+            });
             this.setState({ loading: false });
             break;
           case 1:
@@ -107,13 +130,13 @@ class ScrollComponent extends Component {
       this.setState({ token: res.data.token });
       this.getTrivia();
     });
-    }
+  }
 
-    htmlDecode(input) {
-        var e = document.createElement('div');
-        e.innerHTML = input;
-        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-    }
+  htmlDecode(input) {
+    var e = document.createElement("div");
+    e.innerHTML = input;
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+  }
 }
 
 export default ScrollComponent;

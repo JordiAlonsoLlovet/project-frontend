@@ -30,6 +30,7 @@ header nav {
     justify-content: space-between;
 }
 
+
 .container {
     display: flex;
     flex-direction: column;
@@ -37,6 +38,8 @@ header nav {
     padding: 1rem;
     margin: 5px;
     border: solid;
+    border-color: black;
+    text-decoration: none;
 }
 
 .container div {
@@ -47,14 +50,16 @@ header nav {
     justify-content: space-between;
 }
 
-.container h2 {
-
-}
+    .container h2 {
+        color: black;
+        text-decoration: none;
+    }
 
     .container > div li {
         list-style-type: none;
         text-decoration: none;
         color: #9b9b9b;
+        text-decoration: none;
     }
 
 
