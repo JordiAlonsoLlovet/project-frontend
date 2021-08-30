@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Route, NavLink, HashRouter } from "react-router-dom";
-import Question from "./Question";
 
 class ScrollComponent extends Component {
   constructor() {
     super();
     this.state = {
-        trivia: [],
-        answers: [],
+      trivia: [],
+      answers: [],
       question: "",
       token: "",
       finish: false,
@@ -28,21 +27,16 @@ class ScrollComponent extends Component {
 
     return (
       <div>
-        <Route
-          path="/question"
-          render={props => (
-              <Question {...props} pregunta={this.state.question} respuestas={this.state.answers} />
-          )}
-        />
         <div className="loadedContainers">
           {this.state.trivia.map(user => (
             <NavLink
-              to="/question"
+              to={{
+                pathname: "/question",
+                      state: { title: user.question, incorrect: user.incorrect_answers.join(), correct: user.correct_answer, category: user.category, difficulty: user.difficulty}
+              }}
               className="container"
-              onClick={() => this.setQuestion(user)}
             >
-                  <h2>{this.htmlDecode(user.question)}</h2>
-                  <li>{this.htmlDecode(user.incorrect_answers[1])}</li>
+              <h2>{this.htmlDecode(user.question)}</h2>
               <div>
                 <li>{user.category}</li>
                 <li>
@@ -86,14 +80,6 @@ class ScrollComponent extends Component {
     }
     this.setState({ prevY: y });
   }
-
-    setQuestion(pregunta) {
-        console.log(pregunta);
-        this.setState({ question: pregunta });
-        var position = Math.floor(Math.random() * pregunta.incorrect_answers.length)
-        var answers = pregunta.incorrect_answers.splice(position, 0, ...pregunta.correct_answer)
-        this.setState({ answers: answers })
-    }
 
   getTrivia(limit = 10) {
     //console.log(this.state.token)

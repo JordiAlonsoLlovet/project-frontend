@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, NavLink, HashRouter } from "react-router-dom";
 import ScrollComponent from "./ScrollComponent";
+import Question from "./Question";
 
 function Main() {
   return (
@@ -10,7 +11,8 @@ function Main() {
       </header>
       <HashRouter>
         <div className="content">
-          <Route path="/" component={ScrollComponent} />
+                  <Route exact path="/" component={ScrollComponent} />
+                  <Route path="/question" component={Question} />
         </div>
       </HashRouter>
     </div>
